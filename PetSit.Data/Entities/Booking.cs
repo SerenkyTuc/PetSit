@@ -1,11 +1,9 @@
-using PetSit.Domain.Enums;
-namespace PetSit.Domain.Entities;
+﻿using PetSit.Data.Enums;
 
-public class Booking
+namespace PetSit.Data.Entities;
+
+public class Booking : BaseEntity
 {
-    public Guid Id { get; set; }
-    public Guid OwnerId { get; set; }
-    public Guid SitterId { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public string? Comment { get; set; }
@@ -14,5 +12,4 @@ public class Booking
     public Owner Owner { get; set; } = null!;
     public Sitter Sitter { get; set; } = null!;
     public ICollection<BookingPet> BookingPets { get; set; } = new List<BookingPet>();
-
 }

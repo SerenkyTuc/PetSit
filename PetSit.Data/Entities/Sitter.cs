@@ -1,13 +1,14 @@
-namespace PetSit.Domain.Entities;
+﻿namespace PetSit.Data.Entities;
 
-public class Owner
+public class Sitter : BaseEntity
 {
-    public Guid UserId { get; set; }
+    public string? Description { get; set; }
     public string? Address { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
+    public int RadiusWalk { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public User User { get; set; } = null!;
-    public ICollection<Pet> Pets { get; set; } = new List<Pet>();
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }

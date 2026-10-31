@@ -1,11 +1,9 @@
-using PetSit.Domain.Enums;
-namespace PetSit.Domain.Entities;
+﻿using PetSit.Data.Enums;
 
-public class SupportTicket
+namespace PetSit.Data.Entities;
+
+public class SupportTicket : BaseEntity
 {
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public Guid? AdminId { get; set; }
     public string Body { get; set; } = string.Empty;
     public TicketCategory Category { get; set; }
     public DateTime CreatedAt { get; set; }

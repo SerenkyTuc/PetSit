@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetSit.Data;
 
 #nullable disable
 
-namespace PetSit.Migrations
+namespace PetSit.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261029115659_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace PetSit.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Admin", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Admin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,10 +41,10 @@ namespace PetSit.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Admins");
+                    b.ToTable("Admin", (string)null);
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Booking", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Booking", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,32 +76,38 @@ namespace PetSit.Migrations
 
                     b.HasIndex("SitterId");
 
-                    b.ToTable("Bookings", t =>
+                    b.ToTable("Booking", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Bookings_Dates", "\"EndTime\" > \"StartTime\"");
-
-                            t.HasCheckConstraint("CK_Bookings_NotSelf", "\"OwnerId\" <> \"SitterId\"");
+                            t.HasCheckConstraint("CK_Booking_Dates", "\"EndTime\" > \"StartTime\"");
                         });
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.BookingPet", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.BookingPet", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("BookingId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("PetId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("BookingId", "PetId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PetId");
 
-                    b.ToTable("BookingPets");
+                    b.HasIndex("BookingId", "PetId")
+                        .IsUnique();
+
+                    b.ToTable("BookingPet", (string)null);
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Owner", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Owner", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
@@ -113,15 +122,21 @@ namespace PetSit.Migrations
                         .HasPrecision(9, 6)
                         .HasColumnType("numeric(9,6)");
 
-                    b.HasKey("UserId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.ToTable("Owners", t =>
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Owners", null, t =>
                         {
                             t.HasCheckConstraint("CK_Owners_Coordinates", "(\"Latitude\" IS NULL) = (\"Longitude\" IS NULL)");
                         });
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Pet", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Pet", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,13 +174,13 @@ namespace PetSit.Migrations
 
                     b.HasIndex("SpeciesId");
 
-                    b.ToTable("Pets", t =>
+                    b.ToTable("Pet", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Pets_Weight", "\"Weight\" IS NULL OR \"Weight\" > 0");
+                            t.HasCheckConstraint("CK_Pet_Weight", "\"Weight\" IS NULL OR \"Weight\" > 0");
                         });
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.PetSpecies", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.PetSpecies", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -181,12 +196,13 @@ namespace PetSit.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("PetSpecies");
+                    b.ToTable("PetSpecies", (string)null);
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Sitter", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Sitter", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
@@ -212,9 +228,15 @@ namespace PetSit.Migrations
                     b.Property<int>("RadiusWalk")
                         .HasColumnType("integer");
 
-                    b.HasKey("UserId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.ToTable("Sitters", t =>
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Sitters", null, t =>
                         {
                             t.HasCheckConstraint("CK_Sitters_Coordinates", "(\"Latitude\" IS NULL) = (\"Longitude\" IS NULL)");
 
@@ -222,7 +244,7 @@ namespace PetSit.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.SupportTicket", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.SupportTicket", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,10 +277,10 @@ namespace PetSit.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SupportTickets");
+                    b.ToTable("SupportTickets", (string)null);
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.User", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -282,18 +304,18 @@ namespace PetSit.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Booking", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Booking", b =>
                 {
-                    b.HasOne("PetSit.Domain.Entities.Owner", "Owner")
+                    b.HasOne("PetSit.Data.Entities.Owner", "Owner")
                         .WithMany("Bookings")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PetSit.Domain.Entities.Sitter", "Sitter")
+                    b.HasOne("PetSit.Data.Entities.Sitter", "Sitter")
                         .WithMany("Bookings")
                         .HasForeignKey("SitterId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -304,15 +326,15 @@ namespace PetSit.Migrations
                     b.Navigation("Sitter");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.BookingPet", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.BookingPet", b =>
                 {
-                    b.HasOne("PetSit.Domain.Entities.Booking", "Booking")
+                    b.HasOne("PetSit.Data.Entities.Booking", "Booking")
                         .WithMany("BookingPets")
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PetSit.Domain.Entities.Pet", "Pet")
+                    b.HasOne("PetSit.Data.Entities.Pet", "Pet")
                         .WithMany("BookingPets")
                         .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -323,26 +345,26 @@ namespace PetSit.Migrations
                     b.Navigation("Pet");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Owner", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Owner", b =>
                 {
-                    b.HasOne("PetSit.Domain.Entities.User", "User")
+                    b.HasOne("PetSit.Data.Entities.User", "User")
                         .WithOne("Owner")
-                        .HasForeignKey("PetSit.Domain.Entities.Owner", "UserId")
+                        .HasForeignKey("PetSit.Data.Entities.Owner", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Pet", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Pet", b =>
                 {
-                    b.HasOne("PetSit.Domain.Entities.Owner", "Owner")
+                    b.HasOne("PetSit.Data.Entities.Owner", "Owner")
                         .WithMany("Pets")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PetSit.Domain.Entities.PetSpecies", "Species")
+                    b.HasOne("PetSit.Data.Entities.PetSpecies", "Species")
                         .WithMany("Pets")
                         .HasForeignKey("SpeciesId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -353,25 +375,25 @@ namespace PetSit.Migrations
                     b.Navigation("Species");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Sitter", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Sitter", b =>
                 {
-                    b.HasOne("PetSit.Domain.Entities.User", "User")
+                    b.HasOne("PetSit.Data.Entities.User", "User")
                         .WithOne("Sitter")
-                        .HasForeignKey("PetSit.Domain.Entities.Sitter", "UserId")
+                        .HasForeignKey("PetSit.Data.Entities.Sitter", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.SupportTicket", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.SupportTicket", b =>
                 {
-                    b.HasOne("PetSit.Domain.Entities.Admin", "Admin")
+                    b.HasOne("PetSit.Data.Entities.Admin", "Admin")
                         .WithMany("Tickets")
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("PetSit.Domain.Entities.User", "User")
+                    b.HasOne("PetSit.Data.Entities.User", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -382,39 +404,39 @@ namespace PetSit.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Admin", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Admin", b =>
                 {
                     b.Navigation("Tickets");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Booking", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Booking", b =>
                 {
                     b.Navigation("BookingPets");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Owner", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Owner", b =>
                 {
                     b.Navigation("Bookings");
 
                     b.Navigation("Pets");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Pet", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Pet", b =>
                 {
                     b.Navigation("BookingPets");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.PetSpecies", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.PetSpecies", b =>
                 {
                     b.Navigation("Pets");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.Sitter", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.Sitter", b =>
                 {
                     b.Navigation("Bookings");
                 });
 
-            modelBuilder.Entity("PetSit.Domain.Entities.User", b =>
+            modelBuilder.Entity("PetSit.Data.Entities.User", b =>
                 {
                     b.Navigation("Owner");
 
