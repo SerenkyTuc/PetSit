@@ -1,4 +1,4 @@
-﻿using PetSit.Data.Enums;
+﻿using PetSit.Common.Enums;
 
 namespace PetSit.Data.Entities;
 
@@ -12,3 +12,4 @@ public class SupportTicket : BaseEntity
     public User User { get; set; } = null!;
     public Admin? Admin { get; set; }
 }
+

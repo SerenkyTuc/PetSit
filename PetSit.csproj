@@ -23,10 +23,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="PetSit.Data\**" />
-        <EmbeddedResource Remove="PetSit.Data\**" />
-        <Content Remove="PetSit.Data\**" />
-        <None Remove="PetSit.Data\**" />
+        <Compile Remove="PetSit.Data\**;PetSit.Common\**;PetSit.Resources\**" />
+        <EmbeddedResource Remove="PetSit.Data\**;PetSit.Common\**;PetSit.Resources\**" />
+        <Content Remove="PetSit.Data\**;PetSit.Common\**;PetSit.Resources\**" />
+        <None Remove="PetSit.Data\**;PetSit.Common\**;PetSit.Resources\**" />
     </ItemGroup>
 
     <ItemGroup>

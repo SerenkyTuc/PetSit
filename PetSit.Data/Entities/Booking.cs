@@ -1,4 +1,4 @@
-﻿using PetSit.Data.Enums;
+﻿using PetSit.Common.Enums;
 
 namespace PetSit.Data.Entities;
 
@@ -13,3 +13,4 @@ public class Booking : BaseEntity
     public Sitter Sitter { get; set; } = null!;
     public ICollection<BookingPet> BookingPets { get; set; } = new List<BookingPet>();
 }
+
